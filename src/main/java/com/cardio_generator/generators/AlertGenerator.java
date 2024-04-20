@@ -7,28 +7,39 @@ import com.cardio_generator.outputs.OutputStrategy;
 public class AlertGenerator implements PatientDataGenerator {
 
     public static final Random randomGenerator = new Random();
-    private boolean[] AlertStates; // false = resolved, true = pressed
-
+    // changed the first letter in AlertStates to lower case as the variable name first letter need to be in lower Case
+    private boolean[] alertStates; // false = resolved, true = pressed
+    //as CHANCE_TO_RESOLVE are Constant it is declared static final fields whose contents are deeply immutable and whose methods have no detectable side effects
+    private static final double CHANCE_TO_RESOLVE = 0.9;  
+    
+    
+    
     public AlertGenerator(int patientCount) {
-        AlertStates = new boolean[patientCount + 1];
+    // changed the first letter in AlertStates to lower case 
+        alertStates = new boolean[patientCount + 1];
     }
 
     @Override
     public void generate(int patientId, OutputStrategy outputStrategy) {
         try {
-            if (AlertStates[patientId]) {
-                if (randomGenerator.nextDouble() < 0.9) { // 90% chance to resolve
-                    AlertStates[patientId] = false;
+            if (alertStates[patientId]) { // changed the first letter in AlertStates to lower case 
+                // changed 0.9 as named a constant 
+                if (randomGenerator.nextDouble() < CHANCE_TO_RESOLVE) { // 90% chance to resolve
+                    alertStates[patientId] = false; // changed the first letter in AlertStates to lower case 
                     // Output the alert
                     outputStrategy.output(patientId, System.currentTimeMillis(), "Alert", "resolved");
                 }
             } else {
-                double Lambda = 0.1; // Average rate (alerts per period), adjust based on desired frequency
-                double p = -Math.expm1(-Lambda); // Probability of at least one alert in the period
+                
+                // Average rate (alerts per period), adjust based on desired frequency
+                // Use lowerCamelCase for variable names as it is no a constant variable
+                double lambda = 0.1;
+                double p = -Math.expm1(-lambda); // Probability of at least one alert in the period
                 boolean alertTriggered = randomGenerator.nextDouble() < p;
 
                 if (alertTriggered) {
-                    AlertStates[patientId] = true;
+                    alertStates[patientId] = true;   // changed the first letter in AlertStates to lower case 
+
                     // Output the alert
                     outputStrategy.output(patientId, System.currentTimeMillis(), "Alert", "triggered");
                 }
