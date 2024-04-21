@@ -1,9 +1,12 @@
 package com.cardio_generator.generators;
 
+import java.io.IOException;
 import java.util.Random;
 
 import com.cardio_generator.outputs.OutputStrategy;
-
+/**
+ * this class generate a simulating alerts for patients.
+ */
 public class AlertGenerator implements PatientDataGenerator {
 
     public static final Random randomGenerator = new Random();
@@ -13,17 +16,28 @@ public class AlertGenerator implements PatientDataGenerator {
     private static final double CHANCE_TO_RESOLVE = 0.9;  
     
     
-    
+    /**
+     * AlertGenerator construct an alertstates Boolean array for a given number of patients
+     * 
+     * @param patientCount gives the number of patients that is implemented to choose the size of the array 
+     */
     public AlertGenerator(int patientCount) {
     // changed the first letter in AlertStates to lower case 
         alertStates = new boolean[patientCount + 1];
     }
-
+    /**
+     * simulates the alert data for a patient, 
+     * by triggering new alerts based on estimated probabilities or resolving current ones with a 90% probability.  
+     *
+     * @param patientId     is the key for spacific patient.
+     * @param outputStrategy The strategy for outputting the generated data which is imported form othe class in the same package.
+     * 
+     */
     @Override
     public void generate(int patientId, OutputStrategy outputStrategy) {
         try {
             if (alertStates[patientId]) { // changed the first letter in AlertStates to lower case 
-                // changed 0.9 as named a constant 
+                // changed 0.9 as named to a constant name
                 if (randomGenerator.nextDouble() < CHANCE_TO_RESOLVE) { // 90% chance to resolve
                     alertStates[patientId] = false; // changed the first letter in AlertStates to lower case 
                     // Output the alert
