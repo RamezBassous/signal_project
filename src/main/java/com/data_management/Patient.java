@@ -17,10 +17,10 @@ public class Patient {
      * Constructs a new Patient with a specified ID.
      * Initializes an empty list of patient records.
      *
-     * @param patientId the unique identifier for the patient
+     * @param string the unique identifier for the patient
      */
-    public Patient(int patientId) {
-        this.patientId = patientId;
+    public Patient(int string) {
+        this.patientId = string;
         this.patientRecords = new ArrayList<>();
     }
 
@@ -52,6 +52,15 @@ public class Patient {
      *         range
      */
     public List<PatientRecord> getRecords(long startTime, long endTime) {
-        // TODO Implement and test this method
+        List<PatientRecord> recordsInRange = new ArrayList<>();
+        for (PatientRecord record : patientRecords) {
+            if (record.getTimestamp() >= startTime && record.getTimestamp() <= endTime) {
+                recordsInRange.add(record);
+            }
+        }
+        return recordsInRange;
+    }
+       public int getPatientId() {
+        return patientId;
     }
 }

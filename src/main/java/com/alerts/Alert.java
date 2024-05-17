@@ -6,8 +6,8 @@ public class Alert {
     private String condition;
     private long timestamp;
 
-    public Alert(String patientId, String condition, long timestamp) {
-        this.patientId = patientId;
+    public Alert(String string, String condition, long timestamp) {
+        this.patientId = string;
         this.condition = condition;
         this.timestamp = timestamp;
     }

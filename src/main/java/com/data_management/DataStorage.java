@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import com.alerts.AlertGenerator;
 
 /**
@@ -83,6 +84,7 @@ public class DataStorage {
      * @param args command line arguments
      */
     public static void main(String[] args) {
+        
         // DataReader is not defined in this scope, should be initialized appropriately.
         // DataReader reader = new SomeDataReaderImplementation("path/to/data");
         DataStorage storage = new DataStorage();
