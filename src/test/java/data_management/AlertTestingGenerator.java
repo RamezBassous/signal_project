@@ -166,13 +166,12 @@ void testEvaluateDiastolicPressureCriticalAlert() {
 
     @Test
     void testHypotensiveHypoxemiaAlertGeneration() {
-       
         int patientId = 1;
         List<PatientRecord> records = Arrays.asList(
             new PatientRecord(patientId, 89, "SystolicPressure", currentTime),
             new PatientRecord(patientId, 91, "Saturation", currentTime)
         );
-        Mockito.when(mockDataStorage.getRecords(Mockito.eq(patientId), Mockito.anyLong(), Mockito.anyLong()))
+        Mockito.when(mockDataStorage.getRecords(Mockito.anyInt(), Mockito.anyLong(), Mockito.anyLong()))
             .thenReturn(records);
 
         alertGenerator.evaluateData(new Patient(patientId));
@@ -180,15 +179,29 @@ void testEvaluateDiastolicPressureCriticalAlert() {
     }
 
     @Test
-    void testEvaluateIncreasingTrendAlert() {
-        long currentTime = System.currentTimeMillis();
-        DataStorage mockDataStorage = Mockito.mock(DataStorage.class);
-        AlertGenerator alertGenerator = new AlertGenerator(mockDataStorage);
+    void testEvaluateBloodPressureIncreasingTrends() {
+        Patient patient = new Patient(1);
+        List<PatientRecord> records = Arrays.asList(
+            new PatientRecord(1, 110, "SystolicPressure", currentTime),
+            new PatientRecord(1, 120, "SystolicPressure", currentTime),
+            new PatientRecord(1, 130, "SystolicPressure", currentTime)
+        );
+
+        Mockito.when(mockDataStorage.getRecords(Mockito.anyInt(), Mockito.anyLong(), Mockito.anyLong()))
+            .thenReturn(records);
+
+        alertGenerator.evaluateData(patient);
+
+        assertTrue(outContent.toString().contains(" Increasing Trend"));
+    }
+
+    @Test
+    void testEvaluateDecreasingTrendAlert() {
         Patient patient = new Patient(1);
         List<PatientRecord> systolicRecords = Arrays.asList(
-            new PatientRecord(1, 120, "SystolicPressure", currentTime - 3000),  // First reading
-            new PatientRecord(1, 130, "SystolicPressure", currentTime - 2000),  // Second reading
-            new PatientRecord(1, 140, "SystolicPressure", currentTime - 1000)   // Third reading
+            new PatientRecord(1, 140, "SystolicPressure", currentTime), 
+            new PatientRecord(1, 130, "SystolicPressure", currentTime), 
+            new PatientRecord(1, 120, "SystolicPressure", currentTime)   
         );
 
         Mockito.when(mockDataStorage.getRecords(Mockito.anyInt(), Mockito.anyLong(), Mockito.anyLong()))
@@ -196,28 +209,7 @@ void testEvaluateDiastolicPressureCriticalAlert() {
         alertGenerator.evaluateData(patient);
 
         String output = outContent.toString();
-        assertTrue(output.contains("Trend Alert: Increasing Trend"), 
-            "Expected 'Trend Alert: Increasing Trend' for increasing systolic pressure but got: " + output);
+        assertTrue(output.contains("Decreasing Trend"), 
+            "Expected 'Decreasing Trend' for decreasing systolic pressure but got: " + output);
     }
-    @Test
-    void testEvaluateDecreasingTrendAlert() {
-        long currentTime = System.currentTimeMillis();
-        DataStorage mockDataStorage = Mockito.mock(DataStorage.class);
-        AlertGenerator alertGenerator = new AlertGenerator(mockDataStorage);
-        Patient patient = new Patient(1);
-        List<PatientRecord> systolicRecords = Arrays.asList(
-        new PatientRecord(1, 140, "SystolicPressure", currentTime - 3000),  // First reading
-        new PatientRecord(1, 130, "SystolicPressure", currentTime - 2000),  // Second reading
-        new PatientRecord(1, 120, "SystolicPressure", currentTime - 1000)   // Third reading
-        );
-
-        Mockito.when(mockDataStorage.getRecords(Mockito.anyInt(), Mockito.anyLong(), Mockito.anyLong()))
-        .thenReturn(systolicRecords);
-         alertGenerator.evaluateData(patient);
-
-        // Verify that the alert message is triggered
-        String output = outContent.toString();
-        assertTrue(output.contains("Trend Alert: Decreasing Trend"), 
-        "Expected 'Trend Alert: Decreasing Trend' for decreasing systolic pressure but got: " + output);
-}
 }

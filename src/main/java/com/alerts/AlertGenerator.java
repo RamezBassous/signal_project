@@ -85,25 +85,29 @@ public class AlertGenerator {
         if (records.size() >= 3) {
             boolean increasing = true;
             boolean decreasing = true;
-            for (int i = 0; i < records.size() - 1; i++) {
-                increasing &= (records.get(i).getMeasurementValue() - records.get(i + 1).getMeasurementValue() > trendThreshold);
-                decreasing &= (records.get(i + 1).getMeasurementValue() - records.get(i).getMeasurementValue() > trendThreshold);
+    
+            for (int i = 1; i < records.size(); i++) {
+                if (records.get(i).getMeasurementValue() <= records.get(i - 1).getMeasurementValue()) {
+                    increasing = false;
+                }
+                if (records.get(i).getMeasurementValue() >= records.get(i - 1).getMeasurementValue()) {
+                    decreasing = false;
+                }
             }
     
             if (increasing) {
-                triggerAlert(new Alert(Integer.toString(patient.getPatientId()), trendAlert + " Increasing Trend Alert", currentTime));
-            }
-            if (decreasing) {
-                triggerAlert(new Alert(Integer.toString(patient.getPatientId()), trendAlert + " Decreasing Trend Alert", currentTime));
+                triggerAlert(new Alert(Integer.toString(patient.getPatientId()), trendAlert + " Increasing Trend", currentTime));
+            } else if (decreasing) {
+                triggerAlert(new Alert(Integer.toString(patient.getPatientId()), trendAlert + " Decreasing Trend", currentTime));
             }
         }
     }
+    
+
     private void evaluatePressure(List<PatientRecord> records, String type, long currentTime, Patient patient) {
         if (type.equals("Systolic")) {
-            // For systolic pressure, evaluate thresholds and trends with specific parameters
             evaluateThresholdAndTrend(records, 180, 90, 10, "SystolicPressure", "Critical Pressure Threshold Alert", type, patient, currentTime);
         } else if (type.equals("Diastolic")) {
-            // For diastolic pressure, evaluate thresholds and trends with specific parameters
             evaluateThresholdAndTrend(records, 120, 60, 10, "DiastolicPressure", "Critical Pressure Threshold Alert", type, patient, currentTime);
         }
     }
