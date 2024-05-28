@@ -1,5 +1,7 @@
 package com.alerts;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -59,12 +61,25 @@ public class AlertGenerator {
     }
     
     private List<PatientRecord> getFilteredRecords(int patientId, long from, long to, String recordType) {
-        return dataStorage.getRecords(patientId, from, to)
-                .stream()
-                .filter(r -> recordType.equals(r.getRecordType()))
-                .sorted(Comparator.comparingLong(PatientRecord::getTimestamp).reversed())
-                .collect(Collectors.toList());
+        List<PatientRecord> records = dataStorage.getRecords(patientId, from, to);
+        List<PatientRecord> filteredRecords = new ArrayList<>();
+        
+        for (PatientRecord record : records) {
+            if (recordType.equals(record.getRecordType())) {
+                filteredRecords.add(record);
+            }
+        }
+        
+        Collections.sort(filteredRecords, new Comparator<PatientRecord>() {
+            @Override
+            public int compare(PatientRecord r1, PatientRecord r2) {
+                return Long.compare(r2.getTimestamp(), r1.getTimestamp());
+            }
+        });
+        
+        return filteredRecords;
     }
+    
     
     private void evaluateThreshold(List<PatientRecord> records, int threshold, String alertMessage, Patient patient) {
         for (PatientRecord record : records) {
