@@ -15,7 +15,7 @@ import com.alerts.AlertGenerator;
  */
 public class DataStorage {
     private Map<Integer, Patient> patientMap; // Stores patient objects indexed by their unique patient ID.
-
+    private static volatile DataStorage instance; // Singleton instance
     /**
      * Constructs a new instance of DataStorage, initializing the underlying storage
      * structure.
@@ -110,4 +110,21 @@ public class DataStorage {
             alertGenerator.evaluateData(patient);
         }
     }
+    
+    /**
+     * Provides access to the singleton instance of DataStorage.
+     *
+     * @return the singleton instance of DataStorage
+     */
+    public static  DataStorage getInstance() {
+        if (instance == null) {
+            synchronized (DataStorage.class) {
+                if (instance == null) {
+                    instance = new DataStorage();
+                }
+            }
+        }
+        return instance;
+    }
+    
 }
