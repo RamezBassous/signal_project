@@ -5,6 +5,7 @@ package com.data_management;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.net.URI;
 
 public class FileDataReader implements DataReader {
 
@@ -15,7 +16,7 @@ public class FileDataReader implements DataReader {
     }
 
     @Override
-    public void readData(DataStorage dataStorage) throws IOException {
+    public void readData(DataStorage dataStorage, URI servies) throws IOException {
         // Construct the file path based on the directoryPath
         String filePath = directoryPath + "/output.txt";
 

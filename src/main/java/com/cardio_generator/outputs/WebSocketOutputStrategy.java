@@ -1,9 +1,9 @@
 package com.cardio_generator.outputs;
 
+import java.net.InetSocketAddress;
+
 import org.java_websocket.WebSocket;
 import org.java_websocket.server.WebSocketServer;
-
-import java.net.InetSocketAddress;
 
 public class WebSocketOutputStrategy implements OutputStrategy {
 
@@ -11,7 +11,7 @@ public class WebSocketOutputStrategy implements OutputStrategy {
 
     public WebSocketOutputStrategy(int port) {
         server = new SimpleWebSocketServer(new InetSocketAddress(port));
-        System.out.println("WebSocket server created on port: " + port + ", listening for connections...");
+        System.out.println("WebSocket server created port: " + port + ", connections listening");
         server.start();
     }
 
