@@ -20,6 +20,7 @@ import com.data_management.PatientRecord;
 public class AlertGenerator {
     
     private DataStorage dataStorage;
+    
 
     /**
      * Constructs an {@code AlertGenerator} with a specified {@code DataStorage}.
@@ -202,7 +203,7 @@ public class AlertGenerator {
      *
      * @param alert the alert object containing details about the alert condition
      */
-    private void triggerAlert(Alert alert) {
+    public void triggerAlert(Alert alert) {
         System.out.println("Alert triggered for patient: " + alert.getPatientId() +
             ", Condition: " + alert.getCondition() +
             ", Timestamp: " + alert.getTimestamp());
