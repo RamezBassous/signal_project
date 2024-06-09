@@ -1,7 +1,13 @@
 package com.alerts.decorator;
 
-public class PriorityAlertDecorator extends AlertDecorator{
+/**
+ * Adds priority handling to alerts.
+ */
+public class PriorityAlertDecorator extends AlertDecorator {
     
+    /**
+     * Triggers the alert and adds priority handling.
+     */
     @Override
     public void triggerAlert() {
         super.triggerAlert();

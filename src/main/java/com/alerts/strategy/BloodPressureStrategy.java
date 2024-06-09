@@ -10,11 +10,19 @@ import com.data_management.DataStorage;
 import com.data_management.Patient;
 import com.data_management.PatientRecord;
 
+/**
+ * Strategy for checking blood pressure alerts.
+ */
 public class BloodPressureStrategy implements AlertStrategy {
 
-    private DataStorage dataStorage;
-    private AlertGenerator alertGenerator;
+    public DataStorage dataStorage;
+    public AlertGenerator alertGenerator;
 
+    /**
+     * Checks for blood pressure alerts for the given patient.
+     *
+     * @param patient The patient for whom the blood pressure alerts are checked.
+     */
     @Override
     public void checkAlert(Patient patient) {
         long currentTime = System.currentTimeMillis();
@@ -38,17 +46,32 @@ public class BloodPressureStrategy implements AlertStrategy {
         checkTrendAndTriggerAlert(diastolicRecords, "Diastolic", patient, currentTime);
     }
 
-    private void checkPressureAlerts(List<PatientRecord> records, String type, Patient patient) {
+    /**
+     * Checks for high or low blood pressure alerts.
+     *
+     * @param records List of patient records
+     * @param type    Type of pressure (Systolic or Diastolic)
+     * @param patient The patient for whom the alerts are checked.
+     */
+    public void checkPressureAlerts(List<PatientRecord> records, String type, Patient patient) {
         for (PatientRecord record : records) {
             double value = record.getMeasurementValue();
             if (("Systolic".equals(type) && (value > 180 || value < 90)) ||
-                ("Diastolic".equals(type) && (value > 120 || value < 60))) {
+                    ("Diastolic".equals(type) && (value > 120 || value < 60))) {
                 alertGenerator.triggerAlert(new Alert(Integer.toString(patient.getPatientId()), type + " pressure alert", record.getTimestamp()));
             }
         }
     }
 
-    private void checkTrendAndTriggerAlert(List<PatientRecord> records, String type, Patient patient, long currentTime) {
+    /**
+     * Checks for trends in blood pressure and triggers alerts accordingly.
+     *
+     * @param records     List of patient records
+     * @param type        Type of pressure (Systolic or Diastolic)
+     * @param patient     The patient for whom the alerts are checked.
+     * @param currentTime The current time
+     */
+    public void checkTrendAndTriggerAlert(List<PatientRecord> records, String type, Patient patient, long currentTime) {
         if (records.size() >= 3) {
             boolean increasing = true;
             boolean decreasing = true;

@@ -9,15 +9,18 @@ import com.data_management.Patient;
 import com.data_management.PatientRecord;
 
 /**
- * This class implements the AlertStrategy interface and generates alerts
- * based on heart rate readings from ECG records of a patient.
+ * Strategy for generating alerts based on heart rate readings from ECG records.
  */
 public class HeartRateStrategy implements AlertStrategy {
 
     private DataStorage dataStorage;
     private AlertGenerator alertGenerator;
- 
 
+    /**
+     * Checks for abnormal heart rate alerts for the given patient.
+     *
+     * @param patient The patient for whom the heart rate alerts are checked.
+     */
     @Override
     public void checkAlert(Patient patient) {
         long currentTime = System.currentTimeMillis();

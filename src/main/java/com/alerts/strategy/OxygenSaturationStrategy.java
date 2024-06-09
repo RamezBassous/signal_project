@@ -9,18 +9,26 @@ import com.data_management.DataStorage;
 import com.data_management.Patient;
 import com.data_management.PatientRecord;
 
+/**
+ * Strategy for generating alerts based on oxygen saturation levels.
+ */
 public class OxygenSaturationStrategy implements AlertStrategy {
     private DataStorage dataStorage;
     private AlertGenerator alertGenerator;
 
+    /**
+     * Checks for oxygen saturation alerts for the given patient.
+     *
+     * @param patient The patient for whom the oxygen saturation alerts are checked.
+     */
     @Override
     public void checkAlert(Patient patient) {
         long currentTime = System.currentTimeMillis();
         List<PatientRecord> records = dataStorage.getRecords(patient.getPatientId(), currentTime - 600000, currentTime)
-            .stream()
-            .filter(r -> "Saturation".equals(r.getRecordType()))
-            .sorted((r1, r2) -> Long.compare(r1.getTimestamp(), r2.getTimestamp()))
-            .collect(Collectors.toList());
+                .stream()
+                .filter(r -> "Saturation".equals(r.getRecordType()))
+                .sorted((r1, r2) -> Long.compare(r1.getTimestamp(), r2.getTimestamp()))
+                .collect(Collectors.toList());
 
         if (records.isEmpty()) return;
 
@@ -32,9 +40,9 @@ public class OxygenSaturationStrategy implements AlertStrategy {
             // Check for low saturation
             if (value < 92) {
                 alertGenerator.triggerAlert(new Alert(
-                    Integer.toString(patient.getPatientId()), 
-                    "Low Saturation Alert", 
-                    record.getTimestamp()
+                        Integer.toString(patient.getPatientId()),
+                        "Low Saturation Alert",
+                        record.getTimestamp()
                 ));
                 return;
             }
@@ -44,9 +52,9 @@ public class OxygenSaturationStrategy implements AlertStrategy {
                 double dropPercentage = 100.0 * (previousRecord.getMeasurementValue() - value) / previousRecord.getMeasurementValue();
                 if (dropPercentage >= 5) {
                     alertGenerator.triggerAlert(new Alert(
-                        Integer.toString(patient.getPatientId()), 
-                        "Rapid Blood Oxygen Drop Alert", 
-                        record.getTimestamp()
+                            Integer.toString(patient.getPatientId()),
+                            "Rapid Blood Oxygen Drop Alert",
+                            record.getTimestamp()
                     ));
                     return;
                 }
@@ -55,5 +63,3 @@ public class OxygenSaturationStrategy implements AlertStrategy {
         }
     }
 }
-
-
